@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
+﻿using FlyDubai.CoreAPI.Services.Contracts;
+using FlyDubai.CoreAPI.Services.Services;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace FlyDubai.CoreAPI.Configurations.DI
 {
@@ -10,6 +12,8 @@ namespace FlyDubai.CoreAPI.Configurations.DI
                 return;
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            services.AddTransient<IFlyDubai, FlyDubaiService>();
         }
     }
 }
