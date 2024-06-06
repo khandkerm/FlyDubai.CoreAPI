@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34518.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlyDubai.CoreAPI", "FlyDubai.CoreAPI\FlyDubai.CoreAPI.csproj", "{307DEE82-6403-401D-9623-B565439FD4A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlyDubai.CoreAPI.Models", "FlyDubai.CoreAPI.Models\FlyDubai.CoreAPI.Models.csproj", "{3F1734A5-AA47-4305-AF1F-69B6D00D2547}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlyDubai.CoreAPI.Services", "FlyDubai.CoreAPI.Services\FlyDubai.CoreAPI.Services.csproj", "{787DF7AA-7261-4093-98D9-EC684D865B07}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{307DEE82-6403-401D-9623-B565439FD4A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{307DEE82-6403-401D-9623-B565439FD4A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{307DEE82-6403-401D-9623-B565439FD4A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{307DEE82-6403-401D-9623-B565439FD4A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F1734A5-AA47-4305-AF1F-69B6D00D2547}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F1734A5-AA47-4305-AF1F-69B6D00D2547}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F1734A5-AA47-4305-AF1F-69B6D00D2547}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F1734A5-AA47-4305-AF1F-69B6D00D2547}.Release|Any CPU.Build.0 = Release|Any CPU
+		{787DF7AA-7261-4093-98D9-EC684D865B07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{787DF7AA-7261-4093-98D9-EC684D865B07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{787DF7AA-7261-4093-98D9-EC684D865B07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{787DF7AA-7261-4093-98D9-EC684D865B07}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61309525-FA7A-4A18-9575-F61C5B83A66E}
+	EndGlobalSection
+EndGlobal
