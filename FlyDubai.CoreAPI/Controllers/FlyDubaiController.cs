@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using FlyDubai.CoreAPI.Helper;
 using FlyDubai.CoreAPI.Models.Global;
 using FlyDubai.CoreAPI.Models.Requests;
 using FlyDubai.CoreAPI.Models.Responses;
@@ -12,6 +13,8 @@ namespace FlyDubai.CoreAPI.Controllers
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="service"></param>
+    /// <param name="logger"></param>
     /// <param name="appSettings"></param>
     [Authorize]
     [ApiController]
@@ -19,8 +22,9 @@ namespace FlyDubai.CoreAPI.Controllers
     [ValidateAntiForgeryToken]
     [Route("api/flydubai")]
     [Route("api/v{version:apiVersion}/flydubai")]
-    public class FlyDubaiController(IFlyDubai service, IOptions<AppSettings> appSettings) : ControllerBase
+    public class FlyDubaiController(IFlyDubai service, ILogger<FlyDubaiController> logger, IOptions<AppSettings> appSettings) : ControllerBase
     {
+        private readonly ILogger _logger = logger;
         private readonly IFlyDubai _service = service;
         private readonly AppSettings _appSettings = appSettings.Value;
 
@@ -39,39 +43,48 @@ namespace FlyDubai.CoreAPI.Controllers
             {
                 response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
                 response.ReturnMessage.Add("ClientId is required.");
-                return StatusCode(StatusCodes.Status417ExpectationFailed);
+                return StatusCode(StatusCodes.Status417ExpectationFailed, response);
             }
 
             if (string.IsNullOrEmpty(_appSettings.ClientSecret) == false)
             {
                 response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
                 response.ReturnMessage.Add("ClientSecret is required.");
-                return StatusCode(StatusCodes.Status417ExpectationFailed);
+                return StatusCode(StatusCodes.Status417ExpectationFailed, response);
             }
 
             if (string.IsNullOrEmpty(_appSettings.Username) == false)
             {
                 response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
                 response.ReturnMessage.Add("Username is required.");
-                return StatusCode(StatusCodes.Status417ExpectationFailed);
+                return StatusCode(StatusCodes.Status417ExpectationFailed, response);
             }
 
             if (string.IsNullOrEmpty(_appSettings.Password) == false)
             {
                 response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
                 response.ReturnMessage.Add("Password is required.");
-                return StatusCode(StatusCodes.Status417ExpectationFailed);
+                return StatusCode(StatusCodes.Status417ExpectationFailed, response);
             }
-
-            LoginRequest loginRequest = new()
+            try
             {
-                ClientId= _appSettings.ClientId,
-                ClientSecret = _appSettings.ClientSecret,
-                Username = _appSettings.Username,
-                Password = _appSettings.Password
-            };
+                LoginRequest loginRequest = new()
+                {
+                    ClientId = _appSettings.ClientId,
+                    ClientSecret = _appSettings.ClientSecret,
+                    Username = _appSettings.Username,
+                    Password = _appSettings.Password
+                };
 
-            response = await _service.AuthenticateAsync(loginRequest);
+                response = await _service.AuthenticateAsync(loginRequest);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex);
+                response.ReturnStatus = StatusCodes.Status500InternalServerError;
+                response.ReturnMessage.Add(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
 
             return Ok(response);
         }
