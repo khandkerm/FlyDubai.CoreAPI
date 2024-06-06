@@ -39,28 +39,28 @@ namespace FlyDubai.CoreAPI.Controllers
         {
             AccessTokenResponse response = new();
 
-            if (string.IsNullOrEmpty(_appSettings.ClientId) == false)
+            if (string.IsNullOrEmpty(_appSettings.ClientId))
             {
                 response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
                 response.ReturnMessage.Add("ClientId is required.");
                 return StatusCode(StatusCodes.Status417ExpectationFailed, response);
             }
 
-            if (string.IsNullOrEmpty(_appSettings.ClientSecret) == false)
+            if (string.IsNullOrEmpty(_appSettings.ClientSecret))
             {
                 response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
                 response.ReturnMessage.Add("ClientSecret is required.");
                 return StatusCode(StatusCodes.Status417ExpectationFailed, response);
             }
 
-            if (string.IsNullOrEmpty(_appSettings.Username) == false)
+            if (string.IsNullOrEmpty(_appSettings.Username))
             {
                 response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
                 response.ReturnMessage.Add("Username is required.");
                 return StatusCode(StatusCodes.Status417ExpectationFailed, response);
             }
 
-            if (string.IsNullOrEmpty(_appSettings.Password) == false)
+            if (string.IsNullOrEmpty(_appSettings.Password))
             {
                 response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
                 response.ReturnMessage.Add("Password is required.");
