@@ -26,8 +26,12 @@ namespace FlyDubai.CoreAPI.Services.Services
                 var response = await client.PostAsync("https://devapi.flydubai.com/res/v3/authenticate", content);
                 var responseString = await response.Content.ReadAsStringAsync();
 
-                var accessTokenResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(responseString);
-                return accessTokenResponse;
+                if (response.IsSuccessStatusCode)
+                {
+                    var accessTokenResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(responseString);
+                    return accessTokenResponse;
+                }
+                return new AccessTokenResponse();
             }
             catch (System.Exception e)
             {

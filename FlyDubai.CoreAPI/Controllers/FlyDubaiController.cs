@@ -15,6 +15,7 @@ namespace FlyDubai.CoreAPI.Controllers
     /// </summary>
     /// <param name="service"></param>
     /// <param name="logger"></param>
+    /// <param name="cache"></param>
     /// <param name="appSettings"></param>
     [Authorize]
     [ApiController]
@@ -22,11 +23,15 @@ namespace FlyDubai.CoreAPI.Controllers
     [ValidateAntiForgeryToken]
     [Route("api/flydubai")]
     [Route("api/v{version:apiVersion}/flydubai")]
-    public class FlyDubaiController(IFlyDubai service, ILogger<FlyDubaiController> logger, IOptions<AppSettings> appSettings) : ControllerBase
+    public class FlyDubaiController(IFlyDubai service, ILogger<FlyDubaiController> logger, FlyDubaiCache cache, IOptions<AppSettings> appSettings) : ControllerBase
     {
         private readonly ILogger _logger = logger;
         private readonly IFlyDubai _service = service;
+        private readonly IFlyDubaiCache _cache = cache;
+
         private readonly AppSettings _appSettings = appSettings.Value;
+        private readonly DateTimeOffset _options = Helper.Helper.CreateCollectoCacheOptions();
+
 
         /// <summary>
         /// 
@@ -76,7 +81,14 @@ namespace FlyDubai.CoreAPI.Controllers
                     Password = _appSettings.Password
                 };
 
-                response = await _service.AuthenticateAsync(loginRequest);
+                string key = $"GetUsers~{loginRequest.ClientId}~{loginRequest.ClientSecret}~{loginRequest.Username}~{loginRequest.Password}";
+                if (_cache.TryGetValue(key: key, value: out response) == false)
+                {
+                    response = await _service.AuthenticateAsync(loginRequest);
+                    //Cache
+                    _ = _cache.Set(key: key, value: response, options: _options);
+                }
+                    
             }
             catch (System.Exception ex)
             {
