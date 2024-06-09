@@ -13,65 +13,57 @@ namespace FlyDubai.CoreAPI.Controllers
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="service"></param>
     /// <param name="logger"></param>
+    /// <param name="service"></param>
+    /// <param name="flyService"></param>
     /// <param name="cache"></param>
     /// <param name="appSettings"></param>
     [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [ValidateAntiForgeryToken]
-    [Route("api/flydubai")]
-    [Route("api/v{version:apiVersion}/flydubai")]
-    public class FlyDubaiController(IFlyDubai service, ILogger<FlyDubaiController> logger, FlyDubaiCache cache, IOptions<AppSettings> appSettings) : ControllerBase
+    [Route("api/pricing")]
+    [Route("api/v{version:apiVersion}/pricing")]
+    public class PricingController(ILogger<PricingController> logger, IPricing service, IFlyDubai flyService, IFlyDubaiCache cache, IOptions<AppSettings> appSettings) : ControllerBase
     {
         private readonly ILogger _logger = logger;
-        private readonly IFlyDubai _service = service;
+        private readonly IPricing _service = service;
         private readonly IFlyDubaiCache _cache = cache;
+        private readonly IFlyDubai _flyService = flyService;
 
         private readonly AppSettings _appSettings = appSettings.Value;
         private readonly DateTimeOffset _options = Helper.Helper.CreateCollectoCacheOptions();
 
-
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("authenticate")]
-        [AllowAnonymous, IgnoreAntiforgeryToken]
-        public async Task<IActionResult> Authenticate()
+        [HttpPost("flightswithfares")]
+        [AllowAnonymous]
+        [IgnoreAntiforgeryToken]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FlightsWithFaresResponse))]
+        public async Task<IActionResult> Flightswithfares([FromBody] FlightsWithFaresRequest request)
         {
-            AccessTokenResponse response = new();
+            FlightsWithFaresResponse response = new();
 
-            if (string.IsNullOrEmpty(_appSettings.ClientId))
+            if (request == null)
             {
                 response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
-                response.ReturnMessage.Add("ClientId is required.");
+                response.ReturnMessage.Add("Parameter value is null.");
                 return StatusCode(StatusCodes.Status417ExpectationFailed, response);
             }
 
-            if (string.IsNullOrEmpty(_appSettings.ClientSecret))
+            if (string.IsNullOrEmpty(_appSettings.EndpointBaseUrl))
             {
                 response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
-                response.ReturnMessage.Add("ClientSecret is required.");
+                response.ReturnMessage.Add("Endpoint Base Url value is null.");
                 return StatusCode(StatusCodes.Status417ExpectationFailed, response);
             }
 
-            if (string.IsNullOrEmpty(_appSettings.Username))
-            {
-                response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
-                response.ReturnMessage.Add("Username is required.");
-                return StatusCode(StatusCodes.Status417ExpectationFailed, response);
-            }
-
-            if (string.IsNullOrEmpty(_appSettings.Password))
-            {
-                response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
-                response.ReturnMessage.Add("Password is required.");
-                return StatusCode(StatusCodes.Status417ExpectationFailed, response);
-            }
             try
             {
+
                 LoginRequest loginRequest = new()
                 {
                     ClientId = _appSettings.ClientId,
@@ -80,14 +72,19 @@ namespace FlyDubai.CoreAPI.Controllers
                     Password = _appSettings.Password
                 };
 
+                AccessTokenResponse accessTokenResponse = new();
+
                 string key = $"Authenticate~{loginRequest.ClientId}~{loginRequest.ClientSecret}~{loginRequest.Username}~{loginRequest.Password}";
-                if (_cache.TryGetValue(key: key, value: out response) == false)
+                if (_cache.TryGetValue(key: key, value: out accessTokenResponse) == false)
                 {
-                    response = await _service.AuthenticateAsync(loginRequest);
+                    accessTokenResponse = await _flyService.AuthenticateAsync(loginRequest);
                     //Cache
-                    _ = _cache.Set(key: key, value: response, options: _options);
+                    _ = _cache.Set(key: key, value: accessTokenResponse, options: _options);
                 }
-                    
+
+                response = await _service.FlightswithfaresAsync(request: request, endpointBaseUrl: _appSettings.EndpointBaseUrl, accessToken: accessTokenResponse.AccessToken);
+
+                return Ok(response);
             }
             catch (System.Exception ex)
             {
@@ -96,8 +93,6 @@ namespace FlyDubai.CoreAPI.Controllers
                 response.ReturnMessage.Add(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
-
-            return Ok(response);
         }
     }
 }
