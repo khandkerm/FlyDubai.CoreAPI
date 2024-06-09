@@ -16,6 +16,7 @@ namespace FlyDubai.CoreAPI.Configurations.DI
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddTransient<IFlyDubai, FlyDubaiService>();
+            services.AddTransient<ICP, CPService>();
         }
     }
 }
