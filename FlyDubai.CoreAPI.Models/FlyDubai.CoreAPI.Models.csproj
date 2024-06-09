@@ -14,4 +14,10 @@
     <Folder Include="Objects\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="TripLover.AirCommonModels">
+      <HintPath>C:\Users\TN-99375\Downloads\TripLover.AirCommonModels.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

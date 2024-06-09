@@ -80,6 +80,16 @@ namespace FlyDubai.CoreAPI.Models.Global
         /// </summary>
         public string AppUrl { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Application Endpoint Base Url for api call
+        /// </summary>
+        public string EndpointBaseUrl { get; set; } = string.Empty;
+
+        /// <summary>
+        /// TokenUrl to get the jwt access key
+        /// </summary>
+        public string TokenUrl { get; set; } = string.Empty;
+
 
         /// <summary>
         /// SOAP Api crypto information
