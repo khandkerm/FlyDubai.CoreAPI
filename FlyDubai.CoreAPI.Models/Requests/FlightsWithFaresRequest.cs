@@ -1,6 +1,6 @@
 ﻿namespace FlyDubai.CoreAPI.Models.Requests
 {
-    public class FlightsWithFares
+    public class FlightsWithFaresRequest
     {
         public RetrieveFareQuoteDateRange RetrieveFareQuoteDateRange { get; set; }
     }
