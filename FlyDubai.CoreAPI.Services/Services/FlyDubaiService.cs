@@ -31,11 +31,18 @@ namespace FlyDubai.CoreAPI.Services.Services
                     var accessTokenResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(responseString);
                     return accessTokenResponse;
                 }
-                return new AccessTokenResponse();
+                else
+                {
+                    throw new HttpRequestException($"Request failed with status code: {response.StatusCode}. Response: {responseString}");
+                }
             }
-            catch (System.Exception e)
+            catch (HttpRequestException ex)
             {
-                throw new System.Exception(e.Message, e);
+                throw new HttpRequestException($"An error occurred while sending the request: {ex.Message}", ex);
+            }
+            catch (System.Exception ex)
+            {
+                throw new System.Exception($"An unexpected error occurred: {ex.Message}", ex);
             }
         }
     }
