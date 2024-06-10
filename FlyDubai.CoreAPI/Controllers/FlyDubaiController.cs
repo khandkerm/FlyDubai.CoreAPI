@@ -30,7 +30,7 @@ namespace FlyDubai.CoreAPI.Controllers
         private readonly IFlyDubaiCache _cache = cache;
 
         private readonly AppSettings _appSettings = appSettings.Value;
-        private readonly DateTimeOffset _options = Helper.Helper.CreateCollectoCacheOptions();
+        private readonly DateTimeOffset _options = Helper.Helper.CreateFlyDubaiCacheOptions();
 
 
         /// <summary>
