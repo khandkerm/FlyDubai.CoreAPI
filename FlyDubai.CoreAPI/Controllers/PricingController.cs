@@ -94,5 +94,126 @@ namespace FlyDubai.CoreAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("services")]
+        [AllowAnonymous]
+        [IgnoreAntiforgeryToken]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AncillaryOfferServiceResponse))]
+        public async Task<IActionResult> AncillaryOfferServices([FromBody] AncillaryOfferServiceRequest request)
+        {
+            AncillaryOfferServiceResponse response = new();
+
+            if (request == null)
+            {
+                response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
+                response.ReturnMessage.Add("Parameter value is null.");
+                return StatusCode(StatusCodes.Status417ExpectationFailed, response);
+            }
+
+            if (string.IsNullOrEmpty(_appSettings.EndpointBaseUrl))
+            {
+                response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
+                response.ReturnMessage.Add("Endpoint Base Url value is null.");
+                return StatusCode(StatusCodes.Status417ExpectationFailed, response);
+            }
+
+            try
+            {
+                LoginRequest loginRequest = new() 
+                {
+                    ClientId = _appSettings.ClientId,
+                    ClientSecret = _appSettings.ClientSecret,
+                    Username = _appSettings.Username,
+                    Password = _appSettings.Password
+                };
+
+                AccessTokenResponse accessTokenResponse = new();
+
+                string key = $"Authenticate~{loginRequest.ClientId}~{loginRequest.ClientSecret}~{loginRequest.Username}~{loginRequest.Password}";
+                if (_cache.TryGetValue(key: key, value: out accessTokenResponse) == false)
+                {
+                    accessTokenResponse = await _flyService.AuthenticateAsync(loginRequest);
+                    //Cache
+                    _ = _cache.Set(key: key, value: accessTokenResponse, options: _options);
+                }
+
+                response = await _service.AncillaryOfferServicesAsync(request: request, endpointBaseUrl: _appSettings.EndpointBaseUrl, accessToken: accessTokenResponse.AccessToken);
+
+                return Ok(response);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex);
+                response.ReturnStatus = StatusCodes.Status500InternalServerError;
+                response.ReturnMessage.Add(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("seats")]
+        [AllowAnonymous]
+        [IgnoreAntiforgeryToken]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SeatQuoteResponse))]
+        public async Task<IActionResult> SeatOffers([FromBody] SeatQuoteRequest request)
+        {
+            SeatQuoteResponse response = new();
+
+            if (request == null)
+            {
+                response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
+                response.ReturnMessage.Add("Parameter value is null.");
+                return StatusCode(StatusCodes.Status417ExpectationFailed, response);
+            }
+
+            if (string.IsNullOrEmpty(_appSettings.EndpointBaseUrl))
+            {
+                response.ReturnStatus = StatusCodes.Status417ExpectationFailed;
+                response.ReturnMessage.Add("Endpoint Base Url value is null.");
+                return StatusCode(StatusCodes.Status417ExpectationFailed, response);
+            }
+
+            try
+            {
+                LoginRequest loginRequest = new()
+                {
+                    ClientId = _appSettings.ClientId,
+                    ClientSecret = _appSettings.ClientSecret,
+                    Username = _appSettings.Username,
+                    Password = _appSettings.Password
+                };
+
+                AccessTokenResponse accessTokenResponse = new();
+
+                string key = $"Authenticate~{loginRequest.ClientId}~{loginRequest.ClientSecret}~{loginRequest.Username}~{loginRequest.Password}";
+                if (_cache.TryGetValue(key: key, value: out accessTokenResponse) == false)
+                {
+                    accessTokenResponse = await _flyService.AuthenticateAsync(loginRequest);
+                    //Cache
+                    _ = _cache.Set(key: key, value: accessTokenResponse, options: _options);
+                }
+
+                response = await _service.SeatOffersAsync(request: request, endpointBaseUrl: _appSettings.EndpointBaseUrl, accessToken: accessTokenResponse.AccessToken);
+
+                return Ok(response);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex);
+                response.ReturnStatus = StatusCodes.Status500InternalServerError;
+                response.ReturnMessage.Add(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
     }
 }
