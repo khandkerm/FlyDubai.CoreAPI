@@ -23,7 +23,7 @@ namespace FlyDubai.CoreAPI.Helper
         /// </summary>
         /// <param name="expirationInMinutes"></param>
         /// <returns></returns>
-        public static DateTimeOffset CreateCollectoCacheOptions(double expirationInMinutes = 36)
+        public static DateTimeOffset CreateFlyDubaiCacheOptions(double expirationInMinutes = 36)
         {
             return DateTime.Now.AddMinutes(expirationInMinutes);
         }

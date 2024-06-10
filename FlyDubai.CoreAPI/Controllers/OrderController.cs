@@ -22,12 +22,12 @@ namespace FlyDubai.CoreAPI.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [ValidateAntiForgeryToken]
-    [Route("api/cp")]
-    [Route("api/v{version:apiVersion}/cp")]
-    public class CPController(ILogger<CPController> logger, ICP service, IFlyDubai flyService, IFlyDubaiCache cache, IOptions<AppSettings> appSettings) : ControllerBase
+    [Route("api/order")]
+    [Route("api/v{version:apiVersion}/order")]
+    public class OrderController(ILogger<PricingController> logger, IOrder service, IFlyDubai flyService, IFlyDubaiCache cache, IOptions<AppSettings> appSettings) : ControllerBase
     {
-        private readonly ICP _service = service;
         private readonly ILogger _logger = logger;
+        private readonly IOrder _service = service;
         private readonly IFlyDubaiCache _cache = cache;
         private readonly IFlyDubai _flyService = flyService;
 
@@ -39,13 +39,13 @@ namespace FlyDubai.CoreAPI.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("summaryPNR")]
+        [HttpPost("cart")]
         [AllowAnonymous]
         [IgnoreAntiforgeryToken]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SummaryPNRResponse))]
-        public async Task<IActionResult> SummaryPNR([FromBody] SummaryPNRRequest request)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderResponse))]
+        public async Task<IActionResult> AddToCart([FromBody] OrderRequest request)
         {
-            SummaryPNRResponse response = new();
+            OrderResponse response = new();
 
             if (request == null)
             {
@@ -60,9 +60,10 @@ namespace FlyDubai.CoreAPI.Controllers
                 response.ReturnMessage.Add("Endpoint Base Url value is null.");
                 return StatusCode(StatusCodes.Status417ExpectationFailed, response);
             }
-            
+
             try
             {
+
                 LoginRequest loginRequest = new()
                 {
                     ClientId = _appSettings.ClientId,
@@ -81,7 +82,9 @@ namespace FlyDubai.CoreAPI.Controllers
                     _ = _cache.Set(key: key, value: accessTokenResponse, options: _options);
                 }
 
-                response = await _service.SummaryPNRAsync(request: request, endpointBaseUrl: _appSettings.EndpointBaseUrl, accessToken: accessTokenResponse.AccessToken); ;
+                response = await _service.AddToCartAsync(request: request, endpointBaseUrl: _appSettings.EndpointBaseUrl, accessToken: accessTokenResponse.AccessToken);
+
+                return Ok(response);
             }
             catch (System.Exception ex)
             {
@@ -90,9 +93,6 @@ namespace FlyDubai.CoreAPI.Controllers
                 response.ReturnMessage.Add(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
-
-            return Ok(response);
         }
     }
-
 }
