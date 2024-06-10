@@ -17,6 +17,7 @@ namespace FlyDubai.CoreAPI.Configurations.DI
 
             services.AddTransient<IFlyDubai, FlyDubaiService>();
             services.AddTransient<IPricing, PricingService>();
+            services.AddTransient<ICP, CPService>();
         }
     }
 }
