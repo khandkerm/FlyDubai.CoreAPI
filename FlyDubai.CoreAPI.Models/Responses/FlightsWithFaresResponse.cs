@@ -1,20 +1,45 @@
-﻿namespace FlyDubai.CoreAPI.Models.Responses
+﻿using Newtonsoft.Json;
+
+namespace FlyDubai.CoreAPI.Models.Responses
 {
-    public class FlightsWithFaresResponse: ResponseBase
+    public class FlightsWithFaresResponse  : ResponseBase
     {
+        [JsonProperty("retrieveFareQuoteDateRangeResponse")]
+        public RetrieveFareQuoteDateRangeResponse RetrieveFareQuoteDateRangeResponse { get; set; }
+    }
+    public class RetrieveFareQuoteDateRangeResponse
+    {
+        [JsonProperty("retrieveFareQuoteDateRangeResult")]
         public RetrieveFareQuoteDateRangeResult RetrieveFareQuoteDateRangeResult { get; set; }
     }
 
     public class RetrieveFareQuoteDateRangeResult
     {
+        [JsonProperty("exceptions")]
         public Exceptions Exceptions { get; set; }
+
+        [JsonProperty("flightSegments")]
         public FlightSegments FlightSegments { get; set; }
+
+        [JsonProperty("legDetails")]
         public LegDetails LegDetails { get; set; }
+
+        [JsonProperty("segmentDetails")]
         public SegmentDetails SegmentDetails { get; set; }
+
+        [JsonProperty("taxDetails")]
         public TaxDetails TaxDetails { get; set; }
+
+        [JsonProperty("serviceDetails")]
         public ServiceDetails ServiceDetails { get; set; }
+
+        [JsonProperty("combinability")]
         public Combinability Combinability { get; set; }
+
+        [JsonProperty("fullInBoundDate")]
         public string FullInBoundDate { get; set; }
+
+        [JsonProperty("fullOutBoundDate")]
         public string FullOutBoundDate { get; set; }
     }
 
@@ -173,6 +198,8 @@
         public string ToTime { get; set; }
         public string FromTime { get; set; }
         public string Type { get; set; }
+        public string Currency { get; set; }  
+        public decimal? Amount { get; set; }  
     }
 
     public class FlightLegDetails
@@ -200,14 +227,14 @@
         public string FlightNum { get; set; }
         public bool International { get; set; }
         public DateTime ArrivalDate { get; set; }
-        public int FlightTime { get; set; }
+        public decimal FlightTime { get; set; }
         public string OperatingCarrier { get; set; }
         public string MarketingCarrier { get; set; }
         public string MarketingFlightNum { get; set; }
         public string FromTerminal { get; set; }
         public string ToTerminal { get; set; }
         public string EQP { get; set; }
-        public string GeneralEQP { get; set; }
+        public string GeneralEQP { get; set; } 
     }
 
     public class SegmentDetails
@@ -224,7 +251,7 @@
         public string CarrierCode { get; set; }
         public DateTime ArrivalDate { get; set; }
         public int Stops { get; set; }
-        public int FlightTime { get; set; }
+        public decimal FlightTime { get; set; }
         public string AircraftType { get; set; }
         public string SellingCarrier { get; set; }
         public string FlightNum { get; set; }
@@ -269,5 +296,4 @@
     {
         public List<string> BS { get; set; }
     }
-
 }

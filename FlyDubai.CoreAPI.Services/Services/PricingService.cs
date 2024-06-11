@@ -12,7 +12,10 @@ namespace FlyDubai.CoreAPI.Services.Services
         {
             try
             {
-                var client = new HttpClient();
+                var client = new HttpClient()
+                {
+                    Timeout = TimeSpan.FromMinutes(5) 
+                }; 
 
                 var json = JsonConvert.SerializeObject(request);
                 var content = new StringContent(content: json, encoding: Encoding.UTF8, mediaType: "application/json");

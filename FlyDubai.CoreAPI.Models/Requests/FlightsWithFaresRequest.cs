@@ -14,7 +14,7 @@
     {
         public CarrierCodes CarrierCodes { get; set; }
 
-        public string SecutiryGUID { get; set; }
+        public string SecutiryGUID { get; set; } = string.Empty;
 
         public string ChannelID { get; set; }
 
