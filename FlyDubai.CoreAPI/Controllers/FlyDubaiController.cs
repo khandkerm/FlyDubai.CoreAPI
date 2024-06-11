@@ -23,7 +23,7 @@ namespace FlyDubai.CoreAPI.Controllers
     [ValidateAntiForgeryToken]
     [Route("api/flydubai")]
     [Route("api/v{version:apiVersion}/flydubai")]
-    public class FlyDubaiController(IFlyDubai service, ILogger<FlyDubaiController> logger, FlyDubaiCache cache, IOptions<AppSettings> appSettings) : ControllerBase
+    public class FlyDubaiController(IFlyDubai service, ILogger<FlyDubaiController> logger, IFlyDubaiCache cache, IOptions<AppSettings> appSettings) : ControllerBase
     {
         private readonly ILogger _logger = logger;
         private readonly IFlyDubai _service = service;
